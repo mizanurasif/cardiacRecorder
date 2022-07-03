@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_margin="8dp">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add New Record"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:layout_gravity="center_horizontal">
+    </TextView>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/black"
+        android:layout_margin="8dp">
+    </TextView>
+    <EditText
+        android:id="@+id/hbm_i"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Heart Rate pre minute"
+        android:layout_margin="8dp"
+        >
+    </EditText>
+    <EditText
+        android:id="@+id/systolic_pressure_i"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Systolic Pressure"
+        android:layout_margin="8dp"
+        >
+    </EditText>
+
+    <EditText
+        android:id="@+id/diastolic_pressure_i"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Diastolic_pressure"
+        android:layout_margin="8dp"
+        >
+    </EditText>
+
+<EditText
+    android:id="@+id/comment_i"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:hint="Comment">
+
+</EditText>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="Cancel">
+            margin</Button>
+
+        <Button
+            android:id="@+id/add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:text="Add">
+
+        </Button>
+    </RelativeLayout>
+</LinearLayout>
