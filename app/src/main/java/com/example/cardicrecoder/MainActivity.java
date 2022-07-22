@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         recordAdapter = new RecordAdapter(this,recorditems);
         //recyclerView.setAdapter(recordAdapter);
-       recordAdapter.setOnItemClickListener(position -> {gotoItemActivity(position);});
+        recordAdapter.setOnItemClickListener(position -> {gotoItemActivity(position);});
         setToolbar();
 
 
@@ -289,7 +289,9 @@ public class MainActivity extends AppCompatActivity {
         diastolic_pressure_d.setText(recorditems.get(position).getDiastolic_pressure());
         comment_d.setText(recorditems.get(position).getComment());
 
-
+        TextView title=view.findViewById(R.id.dialog_title);
+        title.setText("Update Record");
+        
         Button  cancel_d=view.findViewById(R.id.cancel);
         Button update_d=view.findViewById(R.id.add);
         update_d.setText("UPDATE");
