@@ -1,6 +1,7 @@
 package com.example.cardicrecoder;
 
 public class Recorditem {
+    String Id;
     String heart_rate;
     String systolic_pressure;
     String diastolic_pressure;
@@ -9,7 +10,13 @@ public class Recorditem {
     String time;
     String comment;
 
-    public Recorditem(String heart_rate,String systolic_pressure, String diastolic_pressure,String status, String date, String time, String comment) {
+     public Recorditem()
+        {
+
+        }
+
+    public Recorditem(String id, String heart_rate, String systolic_pressure, String diastolic_pressure, String status, String date, String time, String comment) {
+        this.Id=id;
         this.heart_rate = heart_rate;
         this.systolic_pressure = systolic_pressure;
         this.diastolic_pressure = diastolic_pressure;
@@ -18,7 +25,13 @@ public class Recorditem {
         this.time = time;
         this.comment = comment;
     }
+    public String getId() {
+        return Id;
+    }
 
+    public void setId(String id) {
+        Id = id;
+    }
     public String getHeart_rate() {
         return heart_rate;
     }

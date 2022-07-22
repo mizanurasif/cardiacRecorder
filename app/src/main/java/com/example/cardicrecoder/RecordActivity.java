@@ -96,8 +96,8 @@ public class RecordActivity extends AppCompatActivity {
         Comment.setText(comment);
 
 
-        update=findViewById(R.id.update);
-        update.setOnClickListener(v -> showDialog());
+       // update=findViewById(R.id.update);
+      //  update.setOnClickListener(v -> showDialog());
 
        // delete.setOnClickListener(v->delete());
 
@@ -115,6 +115,7 @@ public class RecordActivity extends AppCompatActivity {
         title.setText("Measurement Details");
         back.setOnClickListener(v->onBackPressed());
     }
+    /*
     private void showDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view = LayoutInflater.from(this).inflate(R.layout.datainput_dialolog, null);

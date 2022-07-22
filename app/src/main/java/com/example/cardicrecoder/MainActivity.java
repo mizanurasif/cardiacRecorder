@@ -1,8 +1,6 @@
 package com.example.cardicrecoder;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -10,8 +8,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
-import android.icu.text.SimpleDateFormat;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -19,15 +15,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -61,10 +59,16 @@ public class MainActivity extends AppCompatActivity {
     String Date;
     String Time;
 
+
+    DatabaseReference databaseReference;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        databaseReference= FirebaseDatabase.getInstance().getReference("records");
+
 
         fab = findViewById(R.id.fab_main);
         fab.setOnClickListener(v -> showDialog());
@@ -75,15 +79,48 @@ public class MainActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recordAdapter = new RecordAdapter(this,recorditems);
-        recyclerView.setAdapter(recordAdapter);
-        recordAdapter.setOnItemClickListener(position -> {gotoItemActivity(position);});
+        //recyclerView.setAdapter(recordAdapter);
+       recordAdapter.setOnItemClickListener(position -> {gotoItemActivity(position);});
         setToolbar();
 
 
         calendar=Calendar.getInstance();
-        Date=new java.text.SimpleDateFormat("dd-MMM-yyyy").format(calendar.getTime());
-        Time=new java.text.SimpleDateFormat("hh:mm a").format(calendar.getTime());
+        //Date=new java.text.SimpleDateFormat("dd-MMM-yyyy").format(calendar.getTime());
+        //Time=new java.text.SimpleDateFormat("hh:mm a").format(calendar.getTime());
 
+
+
+
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //fetch data from data base
+        //DatabaseReference reference=FirebaseDatabase.getInstance().getReference("records");
+        databaseReference.addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                recorditems.clear();
+                for(DataSnapshot snap:snapshot.getChildren())
+                {
+                    Recorditem recorditem=snap.getValue(Recorditem.class);
+                    recorditems.add(recorditem);
+                }
+               // recordAdapter = new RecordAdapter(MainActivity.this,recorditems);
+                recyclerView.setAdapter(recordAdapter);
+               // recordAdapter.setOnItemClickListener(position -> {gotoItemActivity(position);});
+
+                // recordAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
     }
 
@@ -91,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
         toolbar=findViewById(R.id.toolbar);
         TextView title=toolbar.findViewById(R.id.toolbartitle);
         ImageButton back=toolbar.findViewById(R.id.back);
-        title.setText("Cadic Records");
+        title.setText("Cardic Records");
         back.setVisibility(View.GONE);
     }
 
@@ -156,9 +193,8 @@ public class MainActivity extends AppCompatActivity {
          systolicpressure = systolic_pressure.getText().toString();
          diastolicpressure = diastolic_pressure.getText().toString();
          comnt = comment.getText().toString();
-         date = Date;
-         time = Time;
-
+         date=new java.text.SimpleDateFormat("dd-MMM-yyyy").format(calendar.getTime());
+         time=new java.text.SimpleDateFormat("hh:mm a").format(calendar.getTime());
         if (heartbeat.isEmpty()) {
             heart_beat.setError("Enter Heart Beat");
             heart_beat.requestFocus();
@@ -210,8 +246,14 @@ public class MainActivity extends AppCompatActivity {
         }
         else
             status="low pressure";
-        recorditems.add(new Recorditem( heartbeat,systolicpressure,diastolicpressure,status,date,time,comnt));
+        String id= databaseReference.push().getKey();
+        Recorditem record=new Recorditem( id,heartbeat,systolicpressure,diastolicpressure,status,date,time,comnt);
+        recorditems.add(record);
         recordAdapter.notifyDataSetChanged();
+
+       databaseReference.child(id).setValue(record);
+
+
         return true;
     }
 
@@ -265,6 +307,8 @@ public class MainActivity extends AppCompatActivity {
         String systolicpressure_d=systolic_pressure_d.getText().toString();
         String diastolicpressure_d=diastolic_pressure_d.getText().toString();
         String comnt_d=comment_d.getText().toString();
+        String date_d=recorditems.get(position).getDate();
+        String time_d=recorditems.get(position).getTime();
         if (heartbeat_d.isEmpty()) {
             heart_beat_d.setError("Enter Heart Beat");
             heart_beat_d.requestFocus();
@@ -325,15 +369,21 @@ public class MainActivity extends AppCompatActivity {
         recorditems.get(position).setDiastolic_pressure(diastolicpressure_d);
         recorditems.get(position).setComment(comnt_d);
         recordAdapter.notifyItemChanged(position);
+
+        String id=recorditems.get(position).getId();
+        Recorditem record=new Recorditem( id,heartbeat_d,systolicpressure_d,diastolicpressure_d,status_d,date_d,time_d,comnt_d);
+        databaseReference.child(id).setValue(record);
         return true;
     }
 
 
     private void deleterecord(int position) {
         {
+
             recorditems.remove(position);
             recordAdapter.notifyItemRemoved(position);
-
+            DatabaseReference databaseReference1=databaseReference.child(recorditems.get(position).getId());
+            databaseReference1.removeValue();
         }
 
     }
